@@ -1,17 +1,5 @@
 # A file crawler using os.scandir
 # Finds files in the given path that contains the target name.
-
-# TODO:
-# - [x] Symlink vulnerability
-# - [x] Empty target name edge case
-# - [x] Redundant pass statement
-# - [x] Data structure choice
-# - [x] Type hints
-# - [x] Typo in docstring
-# - [] User feedback for large searches
-# - [] Memory efficiency
-
-
 import os
 
 def search_directory(path: str, target_name: str) -> list[tuple[str, str]]:
@@ -46,8 +34,8 @@ def search_directory(path: str, target_name: str) -> list[tuple[str, str]]:
         print(f"An error occurred: {e}")
         return []
     
-
-if __name__ == "__main__":
+'''
+def main():
     while True:
         path = input("Enter the path to search for the keyword: ")
         if path == "":
@@ -68,3 +56,4 @@ if __name__ == "__main__":
     print(f"Found {len(result)} matching file(s) with the keyword: {target_name}.")
     for file in result:
         print(f"MatchedFile: {file[0]} at {file[1]}")
+'''
