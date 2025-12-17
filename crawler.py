@@ -2,22 +2,29 @@
 # Finds files in the given path that contains the target name.
 
 # TODO:
-# - []
+# - [x] Symlink vulnerability
+# - [x] Empty target name edge case
+# - [x] Redundant pass statement
+# - [x] Data structure choice
+# - [x] Type hints
+# - [x] Typo in docstring
+# - [] User feedback for large searches
+# - [] Memory efficiency
 
 
 import os
 
-def search_directory(path, target_name):
+def search_directory(path: str, target_name: str) -> list[tuple[str, str]]:
     """
-    Use os.scandir to scan entire directory base on the path.
+    Use os.scandir to scan entire directory based on the path.
 
     Args:
         path (string): the file path that user sets
         target_name (string): the name of the file that user wants to search for
 
     Returns:
-        (list): a list of 2 items list, each list contains the matched filename and the path
-         of the matched file.
+        (list): a list of tuples, each tuple contains the matched filename and the path
+        of the matched file.
     """
     matched_files = []
     # Handle Errors if the current directory is not accessible
@@ -28,14 +35,12 @@ def search_directory(path, target_name):
                 try:
                     if entry.is_file():
                         if target_name.lower() in entry.name.lower():
-                            matched_files.append([entry.name, entry.path])
-                    elif entry.is_dir():
-                        # This fixes the issue with recursive search
+                            matched_files.append((entry.name, entry.path))
+                    elif entry.is_dir(follow_symlinks=False): 
                         child_matched_files = search_directory(entry.path, target_name)
                         matched_files.extend(child_matched_files)
                 except Exception as e:
                     print(f"An error occurred: {e}")
-                    pass
         return matched_files
     except Exception as e:
         print(f"An error occurred: {e}")
@@ -43,8 +48,22 @@ def search_directory(path, target_name):
     
 
 if __name__ == "__main__":
-    path = input("Enter the path to search for the keyword: ")
-    target_name = input("Enter the keyword to search for: ")
+    while True:
+        path = input("Enter the path to search for the keyword: ")
+        if path == "":
+            print("Input cannot be empty.")
+        elif not os.path.exists(path):
+            print("Please enter a path that exists.")
+        elif not os.path.isdir(path):
+            print("Please enter a valid directory.")
+        else:
+            break
+    while True:
+        target_name = input("Enter the keyword to search for: ").strip()
+        if target_name == "":
+            print("Input cannot be empty.")
+        else:
+            break
     result = search_directory(path, target_name)
     print(f"Found {len(result)} matching file(s) with the keyword: {target_name}.")
     for file in result:
