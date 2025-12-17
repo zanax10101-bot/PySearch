@@ -1,16 +1,17 @@
-# MVP implementation of a file crawler using os.scandir
+# A file crawler using os.scandir
 
 import os
 
-path = "/Users/zanax" # My home path
+path = "." # Current directory
+target_name = "crawler" # 
 
-def scan_directory(path):
+def search_directory(path, target_name):
     '''
     Use os.scandir to scan entire directory base on the path. 
-    Output the file names and the directory names.
 
     Args:
         path (string): the file path that user sets
+        target_name (string): the name of the file that user wants to search for
 
     Returns:
         none
@@ -20,9 +21,18 @@ def scan_directory(path):
     with os.scandir(path) as entries:
         for entry in entries:
             if entry.is_file():
-                print(f"File: {entry.name}")
+                if target_name.lower() in entry.name.lower():
+                    print(f"Found the file with the keyword: {target_name}: {entry.name}, location: {entry.path}")
             elif entry.is_dir():
-                print(f"Folder: {entry.name}")
+                try:
+                    search_directory(entry.path, target_name)
+                except PermissionError:
+                    print(f"Permission denied: {entry.path}")
+                except FileNotFoundError:
+                    print(f"File not found: {entry.path}")
+                except NotADirectoryError:
+                    print(f"Not a directory: {entry.path}")
+                except Exception as e:
+                    print(f"An error occurred: {e}")
 
-# Use the function
-scan_directory(path)
+search_directory(path, target_name)
