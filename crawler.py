@@ -3,7 +3,7 @@
 import os
 
 path = "." # Current directory
-target_name = "crawler" # 
+target_name = "crawler" # Keyword to search for
 
 def search_directory(path, target_name):
     '''
@@ -14,15 +14,17 @@ def search_directory(path, target_name):
         target_name (string): the name of the file that user wants to search for
 
     Returns:
-        none
+        string: the path of the file that user wants to search for
     '''
-    print(f"Scanning directory: {path}")
+    print(f"Scanning directory: {path} for the keyword: {target_name}")
 
     with os.scandir(path) as entries:
         for entry in entries:
             if entry.is_file():
                 if target_name.lower() in entry.name.lower():
-                    print(f"Found the file with the keyword: {target_name}: {entry.name}, location: {entry.path}")
+                    print(f"Found the file with the keyword: {target_name} \
+                    in {entry.name} at {entry.path}\n")
+                    return entry.path
             elif entry.is_dir():
                 try:
                     search_directory(entry.path, target_name)
@@ -34,5 +36,14 @@ def search_directory(path, target_name):
                     print(f"Not a directory: {entry.path}")
                 except Exception as e:
                     print(f"An error occurred: {e}")
+        return None
 
-search_directory(path, target_name)
+if __name__ == "__main__":
+    path = input("Enter the path to search for the keyword: ")
+    target_name = input("Enter the keyword to search for: ")
+    result = search_directory(path, target_name)
+    if result:
+        print(f"Found the file with the keyword: {target_name} \
+        in {result} at {result}\n")
+    else:
+        print(f"No file found with the keyword: {target_name}")
